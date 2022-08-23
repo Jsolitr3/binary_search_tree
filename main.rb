@@ -1,10 +1,11 @@
 module Comparable
-  def compare(node1, node2)
-
+  def compare?(newNode, existingNode)
+    newNode > existingNode
   end
 end
 
 class Tree
+include Comparable
   attr_accessor :root
 
   def initialize(array = [1,1,2,3])
@@ -14,7 +15,7 @@ class Tree
   end
 
   def build_tree(array)
-    return Node.new(array) if array.length == 1
+    return Node.new(array[0]) if array.length == 1
     return nil if array.length == 0
     mid = array.length/2
     
@@ -23,15 +24,43 @@ class Tree
     return Node.new(array[mid], left, right)
   end
 
-  def display_tree(queue = [@root])
+  def insert(data)
+    return if 
+
+  end
+
+  def inorder(node = @root, array = [])
+    return if node.nil?
+    inorder(node.left_node, array)
+    array.push(node.data)
+    inorder(node.right_node, array)
+    array
+  end
+
+  def postorder(node = @root, array = [])
+    return if node.nil?
+    postorder(node.left_node, array)    
+    postorder(node.right_node, array)
+    array.push(node.data)
+  end
+
+  def preorder(node = @root, array = [])
+    return if node.nil?
+    array.push(node.data)
+    preorder(node.left_node, array)
+    preorder(node.right_node, array)
+    array
+  end
+
+  def level_order(queue = [@root],array=[])
     newQueue = []
     queue.each do |node|
-      print "|#{node.data}|"
+      array.push(node.data)
       newQueue.push(node.left_node) unless node.left_node.nil?
       newQueue.push(node.right_node) unless node.right_node.nil?
     end
-      puts ""
-      display_tree(newQueue) unless newQueue.all?{|node| node.data.nil?}
+      level_order(newQueue,array) unless newQueue.all?{|node| node.data.nil?}
+      array
 
   end
 
@@ -54,6 +83,10 @@ class Node
     return 1 
   end
 
+  def children?
+    !(@left_node.nil? && @right_node.nil?)
+  end
+
 end
 
 def generate_array(length, num1, num2)
@@ -73,4 +106,7 @@ def generate_array(length, num1, num2)
 end
 
 tree = Tree.new(generate_array(40,0,1000))
-tree.display_tree()
+p tree.preorder()
+p tree.inorder()
+p tree.postorder()
+p tree.level_order()
